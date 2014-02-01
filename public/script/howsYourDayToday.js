@@ -7,15 +7,14 @@ HowsYourDayToday = function(_user)
 {
 	var that = this;
 	var _DEFAULT_MOOD = 3;
+	var _requestUrl = "/request.php";
 
 	/**
 	 * Initializes State of Slider and poplate site with data
 	 */
 	this.init = function()
 	{
-		var requestUrl = "/request.php";
-
-		var jqxhr = $.getJSON(requestUrl, _getGetPageDataAction(), function (data) {
+		var jqxhr = $.getJSON(_requestUrl, _getGetPageDataAction(), function (data) {
 			_populatePage(data);
 		})
 		.fail(function () {
@@ -76,8 +75,7 @@ HowsYourDayToday = function(_user)
 	 */
 	this.sendMood = function()
 	{
-		var requestUrl = "/request.php";
-		var jqxhr = $.get(requestUrl, _getSendMoodData(), function () {
+		var jqxhr = $.get(_requestUrl, _getSendMoodData(), function () {
 
 		})
 			.success(function () {
