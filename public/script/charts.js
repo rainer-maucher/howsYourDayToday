@@ -1,4 +1,10 @@
-// clean up later:
+/*
+	Whenever you'll sit in a rabbit hole, don't forget about the charts!
+
+	With this skill, you can confuse other, to have better escape possibilities.
+	Best option, of course, is never to follow the white rabbit!
+*/
+
 
 var HowsYourDayToday = HowsYourDayToday || {};
 
@@ -10,58 +16,94 @@ var HowsYourDayToday = HowsYourDayToday || {};
  */
 HowsYourDayToday.Charts = function(_user)
 {
-	var _dataURL = 'request.php';
+	var _requestUrl = 'request.php';
+	var _chartData = [];
 
 	/**
-	 *
+	 * Init retrieving and rendering data for charts
 	 */
 	this.draw = function()
 	{
-		var width = 960,
-			height = 500,
-			radius = Math.min(width, height) / 2;
+		_getChartDataPie();
 
-		var color = d3.scale.ordinal()
-			.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+		_getChartDataHistory();
+	};
 
-		var arc = d3.svg.arc()
-			.outerRadius(radius - 10)
-			.innerRadius(0);
+	/**
+	 * Render pie chart for mood today
+	 *
+	 * @param data
+	 * @private
+	 */
+	function _drawMoodTodayPie(data)
+	{
+		var plot = jQuery.jqplot('moodPie', [data],
+			{
+				title: 'Mood today',
 
-		var pie = d3.layout.pie()
-			.sort(null)
-			.value(function(d) { return d.moodCount; });
+				seriesDefaults: {
+					// Make this a pie chart.
+					renderer: jQuery.jqplot.PieRenderer,
+					rendererOptions: {
+						sliceMargin: 4,
+						// Put data labels on the pie slices.
+						// By default, labels show the percentage of the slice.
+						showDataLabels: true
+					}
+				},
+				legend: { show:true, location: 'e' }
+			}
+		);
+	}
 
-		var svg = d3.select("body").append("svg")
-			.attr("width", width)
-			.attr("height", height)
-			.append("g")
-			.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+	/**
+	 * Render history chart
+	 *
+	 * @param data
+	 * @private
+	 */
+	function _drawMoodHistory(data)
+	{
+		var plot = $.jqplot ('moodHistory', [data], {
+								// Give the plot a title.
+								title: 'Mood History (last 30 days)',
+								seriesDefaults: {
 
-		d3.csv(_getChartDataAction(), function(error, data) {
-console.log( data );
-			data.forEach(function(d) {
-				console.log('part', d);
-				d.countMood = +d.countMood;
-			});
-
-			var g = svg.selectAll(".arc")
-				.data(pie(data))
-				.enter().append("g")
-				.attr("class", "arc");
-
-			g.append("path")
-				.attr("d", arc)
-				.style("fill", function(d) { return color(d.data.mood); });
-
-			g.append("text")
-				.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-				.attr("dy", ".35em")
-				.style("text-anchor", "middle")
-				.text(function(d) { return d.data.mood; });
-
-			console.log('through!');
+									markerOptions: {
+										size: 6
+									}
+								}
 		});
+	}
+
+	/**
+	 * Get data for mood today, to render in pie chart
+	 *
+	 * @private
+	 */
+	function _getChartDataPie()
+	{
+		var jqxhr = $.getJSON(_requestUrl, _getChartDataAction(), function (data) {
+			_drawMoodTodayPie(data);
+		})
+			.fail(function () {
+				alert("error on retrieving chart data!");
+			});
+	}
+
+	/**
+	 * Get data for mood history, to render in line chart
+	 *
+	 * @private
+	 */
+	function _getChartDataHistory()
+	{
+		var jqxhr = $.getJSON(_requestUrl, _getChartDataHistoryAction(), function (data) {
+			_drawMoodHistory(data);
+		})
+			.fail(function () {
+				alert("error on retrieving chart data!");
+			});
 	}
 
 	/**
@@ -71,6 +113,16 @@ console.log( data );
 	 */
 	function _getChartDataAction()
 	{
-		return _dataURL + '?action=getChartData&user=' + _user;
+		return 'action=getChartData&user=' + _user;
+	}
+
+	/**
+	 * URL and params to request data for chart
+	 *
+	 * @private
+	 */
+	function _getChartDataHistoryAction()
+	{
+		return 'action=getChartDataMoodHistory&user=' + _user;
 	}
 };

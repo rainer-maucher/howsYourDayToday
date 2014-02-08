@@ -1,5 +1,5 @@
 body {
-	padding: 50px 0 0 50px;
+	padding: 0 0 0 50px;
 	font-family:Verdana;
 }
 #reservation {
@@ -7,4 +7,15 @@ body {
 }
 .hidden {
 	display: none;
+}
+
+/* Chart related ids/classes */
+#moodPie {
+	width: 400px;
+	float:left;
+}
+
+#moodHistory {
+	width: 400px;
+	float:left;
 }

@@ -77,12 +77,39 @@ class Lib_Dispatcher {
 		$out = '';
 		$result['data'] = $this->db->readRows($query);
 
-		$out = 'mood,countMood' . PHP_EOL;
+		$out = array();
 		foreach($result['data'] as $data) {
-			$out .= str_replace($data['mood'], $mood[$data['mood']], $data['mood']) . ',' . ($data['countMood'] * 100) .PHP_EOL;
+			$out[] = array($mood[$data['mood']], $data['countMood']);
 		}
 
-		echo $out;
+		echo json_encode($out);
+	}
+
+	/**
+	 * collects all Data for displaying site
+	 *
+	 * @param array $data
+	 */
+	protected function getChartDataMoodHistoryAction(array $data)
+	{
+		$todaysDate = $this->helper->getTodaysDate();
+		$data = $this->db->validateData($data);
+
+		// Select average ofall given moods for today ceiled
+		$query =  "SELECT CEIL(avg(mood)) AS averageMood ";  // , COUNT(*) AS count
+		$query .= "FROM data ";
+		//$query .= "WHERE date = '{$todaysDate}'";
+		$query .= "GROUP BY date ";
+		$query .= "ORDER BY date ";
+		$query .= "Limit 0,30";
+		$result['data'] = ($this->db->readRows($query));
+
+		$out = array();
+		foreach($result['data'] as $data) {
+			$out[] = (int)$data['averageMood'];
+		}
+
+		echo json_encode($out);
 	}
 
 	/**
