@@ -10,7 +10,7 @@ class Lib_DatabaseManager
 	public function __construct(){
 		$db_host = "localhost";
 		$db_username ="root";
-		$db_password ="r3010129r";
+		$db_password ="root";
 		$db_name ="howsyourdaytoday";
 
 		mysql_connect($db_host, $db_username, $db_password) or die('error while connecting with database: '. mysql_error());
@@ -44,6 +44,29 @@ class Lib_DatabaseManager
 		$result = array();
 		while ($row = mysql_fetch_assoc($data)) {
 			$result = $row;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * reads data from db and returns array with all rows
+	 *
+	 * @param $query
+	 * @return array
+	 */
+	public function readRows($query)
+	{
+		$data = mysql_query($query) or die('error in query: '. mysql_error().'<br />Query: '.$query);
+		if (!$data) {
+			$message  = 'Ungültige Abfrage: ' . mysql_error() . "\n";
+			$message .= 'Gesamte Abfrage: ' . $query;
+			die($message);
+		}
+
+		$result = array();
+		while ($row = mysql_fetch_assoc($data)) {
+			$result[] = $row;
 		}
 
 		return $result;

@@ -57,6 +57,61 @@ class Lib_Dispatcher {
 		$this->db->query($query);
 	}
 
+	protected function getChartDataAction(array $data)
+	{
+		// Move to another place
+		$mood = array();
+		$mood['1'] = 'Please Shoot me';
+		$mood['2'] = 'Bad';
+		$mood['3'] = 'Good';
+		$mood['4'] = 'All Righty right';
+		$mood['5'] = 'Great';
+		$mood['6'] = 'Fucking Awesome';
+
+		$todaysDate = $this->helper->getTodaysDate();
+		$data = $this->db->validateData($data);
+		$query =  "SELECT mood, count(mood) as countMood FROM data WHERE date = '{$todaysDate}'" . PHP_EOL;
+		$query .= "GROUP BY mood";
+
+		$result = array();
+		$out = '';
+		$result['data'] = $this->db->readRows($query);
+
+		$out = array();
+		foreach($result['data'] as $data) {
+			$out[] = array($mood[$data['mood']], $data['countMood']);
+		}
+
+		echo json_encode($out);
+	}
+
+	/**
+	 * collects all Data for displaying site
+	 *
+	 * @param array $data
+	 */
+	protected function getChartDataMoodHistoryAction(array $data)
+	{
+		$todaysDate = $this->helper->getTodaysDate();
+		$data = $this->db->validateData($data);
+
+		// Select average ofall given moods for today ceiled
+		$query =  "SELECT CEIL(avg(mood)) AS averageMood ";  // , COUNT(*) AS count
+		$query .= "FROM data ";
+		//$query .= "WHERE date = '{$todaysDate}'";
+		$query .= "GROUP BY date ";
+		$query .= "ORDER BY date ";
+		$query .= "Limit 0,30";
+		$result['data'] = ($this->db->readRows($query));
+
+		$out = array();
+		foreach($result['data'] as $data) {
+			$out[] = (int)$data['averageMood'];
+		}
+
+		echo json_encode($out);
+	}
+
 	/**
 	 * collects all Data for displaying site
 	 *
