@@ -19,31 +19,43 @@
 <body>
 
 <h1>How is your mood today?</h1>
-<form id="reservation">
-	<label for="minbeds">So, how are you?</label>
-	<select name="minbeds" id="minbeds">
-		<option value="1">Please Shoot me</option>
-		<option value="2">Bad</option>
-		<option value="3">Good</option>
-		<option value="4">All Righty right</option>
-		<option value="5">Great</option>
-		<option value="6">Fucking Awesome</option>
-	</select>
-</form>
-<br/>
-<button onclick="howsYourDayToday.sendMood(); return false;">Send Now</button>
-<p id="companyAverageMood" class="hidden">
-	The companys average mood today is: <span></span>
-</p>
-<p id="peopleMooded" class="hidden">
-	People Mooded today: <span>blubber</span>
+
+<div id="formBox">
+	<form id="reservation">
+		<label for="minbeds">So, how are you?</label>
+		<select name="minbeds" id="minbeds">
+			<option value="1">Please Shoot me</option>
+			<option value="2">Bad</option>
+			<option value="3">Good</option>
+			<option value="4">All Righty right</option>
+			<option value="5">Great</option>
+			<option value="6">Fucking Awesome</option>
+		</select>
+	</form>
+
+	<br/>
+	<button onclick="howsYourDayToday.sendMood(); return false;">Send Now</button>
+</div>
+
+<div id="moodBox" class="hidden">
+	<p id="companyAverageMood" class="hidden">
+		The companys average mood today is: <span></span>
+	</p>
+	<p id="peopleMooded" class="hidden">
+		People Mooded today: <span>blubber</span>
+	</p>
+</div>
+
+<div id="chartBox">
 	<div id="moodPie">
 
 	</div>
+
 	<div id="moodHistory">
 
 	</div>
-</p>
+</div>
+
 <script type="text/javascript">
 
 	var howsYourDayToday;

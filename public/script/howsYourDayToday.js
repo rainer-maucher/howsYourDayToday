@@ -41,11 +41,13 @@ HowsYourDayToday = function(_user)
 		if (data['data']['averageMood']) {
 			$text = $("#minbeds option[value='" + data['data']['averageMood'] + "']").html();
 			$('#companyAverageMood span').text($text);
+			$('#moodBox').removeClass('hidden');
 			$('#companyAverageMood').removeClass('hidden');
 		}
 
 		if (data['data']['count']) {
 			$('#peopleMooded span').text(data['data']['count']);
+			$('#moodBox').removeClass('hidden');
 			$('#peopleMooded').removeClass('hidden');
 		}
 	}
