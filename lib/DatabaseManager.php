@@ -50,6 +50,29 @@ class Lib_DatabaseManager
 	}
 
 	/**
+	 * reads data from db and returns array with all rows
+	 *
+	 * @param $query
+	 * @return array
+	 */
+	public function readRows($query)
+	{
+		$data = mysql_query($query) or die('error in query: '. mysql_error().'<br />Query: '.$query);
+		if (!$data) {
+			$message  = 'Ungültige Abfrage: ' . mysql_error() . "\n";
+			$message .= 'Gesamte Abfrage: ' . $query;
+			die($message);
+		}
+
+		$result = array();
+		while ($row = mysql_fetch_assoc($data)) {
+			$result[] = $row;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Validate given data to prevent SQL-Injection
 	 *
 	 * @param array $data
