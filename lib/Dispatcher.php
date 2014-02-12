@@ -78,8 +78,10 @@ class Lib_Dispatcher {
 		$result['data'] = $this->db->readRows($query);
 
 		$out = array();
+		$total = count($result['data']);
 		foreach($result['data'] as $data) {
-			$out[] = array($mood[$data['mood']], $data['countMood']);
+			$moodPercent = $data['countMood'] / $total * 100;
+			$out[] = array($mood[$data['mood']], $moodPercent);
 		}
 
 		echo json_encode($out);

@@ -83,6 +83,10 @@ HowsYourDayToday = function(_user)
 			.success(function () {
 				// redraw page
 				that.init();
+
+				// Fire custom event allow others to add event
+				// handler for this, add mood data as param:
+				jQuery.event.trigger('moodSaved', _getSendMoodData());
 				alert("Your mood has been saved. Feel free to change your mood everytime it gets better or worse.");
 			})
 			.fail(function () {
