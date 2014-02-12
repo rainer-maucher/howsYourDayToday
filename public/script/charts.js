@@ -18,16 +18,31 @@ HowsYourDayToday.Charts = function(_user)
 {
 	var _requestUrl = 'request.php';
 	var _chartData = [];
+	var that = this;
 
 	/**
 	 * Init retrieving and rendering data for charts
 	 */
 	this.draw = function()
 	{
+		_registerEventHandler();
+
 		_getChartDataPie();
 
 		_getChartDataHistory();
 	};
+
+	/**
+	 * Redraw charts on saved mood
+	 *
+	 * @private
+	 */
+	function _registerEventHandler()
+	{
+		jQuery(document).on('moodSaved', function(event, param) {
+			that.draw();
+		});
+	}
 
 	/**
 	 * Render pie chart for mood today
