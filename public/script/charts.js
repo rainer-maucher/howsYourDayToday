@@ -51,14 +51,11 @@ HowsYourDayToday.Charts = function(_user)
 		});
 
 		var optionsHandler = function(event) {
-
-			console.log(event.data);
-
 			_chartOption = event.data || {};
 			that.draw();
 		};
 
-		//
+		// Bind optionsHandler to form elements
 		jQuery('#chartOptionOwn').on( 'click', {optionName: 'chartOptionOwn'}, optionsHandler );
 		jQuery('#chartOptionSummed').on( 'click', {optionName: 'chartOptionSummed'}, optionsHandler );
 	}
