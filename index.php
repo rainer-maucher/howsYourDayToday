@@ -53,7 +53,17 @@
 
 	<div id="moodHistory">
 
+
 	</div>
+
+	<div id="moodHistoryOptions">
+		<form>
+			<input type="radio" name="chartOption" id="chartOptionOwn" value="own" /><label for="chartOptionOwn">only my history</label><br />
+			<input type="radio" name="chartOption" id="chartOptionSummed" value="summed" /><label for="chartOptionSummed">summed history all</label><br />
+		</form>
+	</div>
+
+
 </div>
 
 <script type="text/javascript">
@@ -66,6 +76,7 @@
 		howsYourDayToday.init();
 
 		var charts = new HowsYourDayToday.Charts("<?= getenv ("REMOTE_ADDR"); ?>");;
+		charts.init();
 		charts.draw();
 	});
 

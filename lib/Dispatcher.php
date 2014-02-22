@@ -4,7 +4,12 @@
  *
  * Class Lib_Dispatcher
  */
-class Lib_Dispatcher {
+class Lib_Dispatcher
+{
+	const CHART_MODE_HISTORY_OWN            = 'chartOptionOwn';
+	const CHART_MODE_HISTORY_ALL_SUMMED     = 'chartOptionSummed';
+	const CHART_MODE_HISTORY_ALL_SPLITTED   = 'chartOptionSplitted';
+
 	/**
 	 * @var DatabaseManager
 	 */
@@ -100,7 +105,12 @@ class Lib_Dispatcher {
 		// Select average ofall given moods for today ceiled
 		$query =  "SELECT CEIL(avg(mood)) AS averageMood ";  // , COUNT(*) AS count
 		$query .= "FROM data ";
-		//$query .= "WHERE date = '{$todaysDate}'";
+
+		// Constrain: History only for one (current) user:
+	    if ($data['mode'] === self::CHART_MODE_HISTORY_OWN) {
+		    $query .= "WHERE user = '" . $data['user'] . "'";
+	    }
+
 		$query .= "GROUP BY date ";
 		$query .= "ORDER BY date ";
 		$query .= "Limit 0,30";
