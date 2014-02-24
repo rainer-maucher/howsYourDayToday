@@ -18,15 +18,22 @@ HowsYourDayToday.Charts = function(_user)
 {
 	var _requestUrl = 'request.php';
 	var _chartData = [];
+	var _chartOption = {optionName:'chartOptionSummed'};
 	var that = this;
+
+	/**
+	 * Do initial stuff
+	 */
+	this.init = function()
+	{
+		_registerEventHandler();
+	}
 
 	/**
 	 * Init retrieving and rendering data for charts
 	 */
 	this.draw = function()
 	{
-		_registerEventHandler();
-
 		_getChartDataPie();
 
 		_getChartDataHistory();
@@ -42,6 +49,15 @@ HowsYourDayToday.Charts = function(_user)
 		jQuery(document).on('moodSaved', function(event, param) {
 			that.draw();
 		});
+
+		var optionsHandler = function(event) {
+			_chartOption = event.data || {};
+			that.draw();
+		};
+
+		// Bind optionsHandler to form elements
+		jQuery('#chartOptionOwn').on( 'click', {optionName: 'chartOptionOwn'}, optionsHandler );
+		jQuery('#chartOptionSummed').on( 'click', {optionName: 'chartOptionSummed'}, optionsHandler );
 	}
 
 	/**
@@ -138,6 +154,6 @@ HowsYourDayToday.Charts = function(_user)
 	 */
 	function _getChartDataHistoryAction()
 	{
-		return 'action=getChartDataMoodHistory&user=' + _user;
+		return 'action=getChartDataMoodHistory&user=' + _user + '&mode=' + _chartOption.optionName;
 	}
 };
