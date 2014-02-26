@@ -55,13 +55,16 @@ class Lib_Dispatcher
 	 */
 	protected function addMoodAction(array $data)
 	{
-		$date = $this->helper->getTodaysDate();
+		$date = $this->helper->getCurrentDate();
 		$data = $this->db->validateData($data);
 		$query = "INSERT INTO data (user, date, mood) VALUES ('{$data['user']}', '$date', {$data['mood']}) ON DUPLICATE KEY UPDATE mood={$data['mood']}";
 
 		$this->db->query($query);
 	}
 
+	/**
+	 * @param array $data
+	 */
 	protected function getChartDataAction(array $data)
 	{
 		// Move to another place
@@ -131,15 +134,39 @@ class Lib_Dispatcher
 	 */
 	protected function getPageDataAction(array $data)
 	{
-		$todaysDate = $this->helper->getTodaysDate();
 		$data = $this->db->validateData($data);
 
-		$query = "SELECT * FROM data WHERE user = '{$data['user']}' AND date = '{$todaysDate}'";
+		$query = "SELECT * FROM data WHERE user = '{$data['user']}'
+					AND date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+					ORDER BY date DESC
+					LIMIT 1
+				";
+
 		$result['user'] =  $this->db->read($query);
 
+		$todaysDate = $this->helper->getTodaysDate();
+
 		// Select average ofall given moods for today ceiled
-		$query = "SELECT CEIL(avg(mood)) AS averageMood, COUNT(*) AS count  FROM data WHERE  date = '{$todaysDate}'";
-		$result['data'] = ($this->db->read($query));
+		$query = "SELECT * FROM (
+						SELECT  * FROM data
+								  WHERE date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+								  ORDER BY  date DESC
+				 ) AS temp GROUP BY USER
+		";
+
+		$rows = $this->db->readRows($query);
+		// calculate average mood
+		$moodSummed = 0;
+		foreach ($rows as $row) {
+			$moodSummed += $row['mood'];
+		}
+
+		$data = array(
+			'averageMood' => ceil(($moodSummed / count($rows))),
+			'count' => count($rows)
+		);
+
+		$result['data'] = $data;
 
 		echo json_encode($result);
 	}

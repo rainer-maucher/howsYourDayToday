@@ -12,4 +12,12 @@ class Lib_Helper {
 	{
 		return date("Y.m.d",time());
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getCurrentDate()
+	{
+		return date("Y.m.d H:i:s",time());
+	}
 }
