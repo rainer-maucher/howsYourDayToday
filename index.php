@@ -59,7 +59,8 @@
 	<div id="moodHistoryOptions">
 		<form>
 			<input type="radio" name="chartOption" id="chartOptionOwn" value="own" /><label for="chartOptionOwn">only my history</label><br />
-			<input type="radio" name="chartOption" id="chartOptionSummed" value="summed" /><label for="chartOptionSummed">summed history all</label><br />
+			<input type="radio" name="chartOption" id="chartOptionSummed" value="summed" checked="checked" /><label for="chartOptionSummed">summed history all</label><br />
+			<input type="radio" name="chartOption" id="chartOptionSplitted" value="splitted" /><label for="chartOptionSplitted">splitted history for all</label><br />
 		</form>
 	</div>
 
