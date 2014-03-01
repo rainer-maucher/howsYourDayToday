@@ -7,11 +7,9 @@
 class Lib_DatabaseManager
 {
 	//Verbinden mit Server und Auswählen der DB
-	public function __construct(){
-		$db_host = "localhost";
-		$db_username ="root";
-		$db_password ="r3010129r";
-		$db_name ="howsyourdaytoday";
+	public function __construct()
+	{
+		require(__dir__ . '/../config/database.php');
 
 		mysql_connect($db_host, $db_username, $db_password) or die('error while connecting with database: '. mysql_error());
 		mysql_select_db($db_name) or die('error while selecting database: '.mysql_error());
