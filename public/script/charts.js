@@ -27,7 +27,7 @@ HowsYourDayToday.Charts = function(_user)
 	this.init = function()
 	{
 		_registerEventHandler();
-	}
+	};
 
 	/**
 	 * Init retrieving and rendering data for charts
@@ -50,7 +50,8 @@ HowsYourDayToday.Charts = function(_user)
 			that.draw();
 		});
 
-		var optionsHandler = function(event) {
+		var optionsHandler = function(event)
+		{
 			_chartOption = event.data || {};
 			that.draw();
 		};
@@ -58,6 +59,7 @@ HowsYourDayToday.Charts = function(_user)
 		// Bind optionsHandler to form elements
 		jQuery('#chartOptionOwn').on( 'click', {optionName: 'chartOptionOwn'}, optionsHandler );
 		jQuery('#chartOptionSummed').on( 'click', {optionName: 'chartOptionSummed'}, optionsHandler );
+		jQuery('#chartOptionSplitted').on( 'click', {optionName: 'chartOptionSplitted'}, optionsHandler );
 	}
 
 	/**
@@ -68,6 +70,9 @@ HowsYourDayToday.Charts = function(_user)
 	 */
 	function _drawMoodTodayPie(data)
 	{
+		// Delete current content
+		$('#moodPie').html('');
+
 		var plot = jQuery.jqplot('moodPie', [data],
 			{
 				title: 'Mood today',
@@ -95,16 +100,51 @@ HowsYourDayToday.Charts = function(_user)
 	 */
 	function _drawMoodHistory(data)
 	{
-		var plot = $.jqplot ('moodHistory', [data], {
-								// Give the plot a title.
-								title: 'Mood History (last 30 days)',
-								seriesDefaults: {
+		// Delete current content
+		$('#moodHistory').html('');
 
-									markerOptions: {
-										size: 6
+		if ((_chartOption.optionName === 'chartOptionOwn')
+		|| (_chartOption.optionName === 'chartOptionSummed')) {
+
+			var suffixTitle = ' - all';
+			if (_chartOption.optionName === 'chartOptionOwn') {
+				suffixTitle = ' - own';
+			}
+
+			var plot = $.jqplot ('moodHistory', [data], {
+									// Give the plot a title.
+									title: 'Mood History (last 30 days)' + suffixTitle,
+									seriesDefaults: {
+
+										markerOptions: {
+											size: 6
+										}
 									}
-								}
-		});
+			});
+		} else {
+			// Split data, which in this case is an object,
+			// into the several arrays (every array is the
+			// mood history for one person)
+			var splitted = [];
+
+			for(var part in data) {
+				if (data.hasOwnProperty(part)) {
+					splitted.push(data[part]);
+				}
+
+			}
+
+			var plot = $.jqplot ('moodHistory', splitted, {
+				// Give the plot a title.
+				title: 'Mood History (last 30 days) - all, splitted',
+				seriesDefaults: {
+
+					markerOptions: {
+						size: 6
+					}
+				}
+			});
+		}
 	}
 
 	/**

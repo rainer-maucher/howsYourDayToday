@@ -105,8 +105,14 @@ class Lib_Dispatcher
 		$todaysDate = $this->helper->getTodaysDate();
 		$data = $this->db->validateData($data);
 
-		// Select average ofall given moods for today ceiled
-		$query =  "SELECT CEIL(avg(mood)) AS averageMood ";  // , COUNT(*) AS count
+		// Constrain: History for all, but splitted
+		$addToQuery = '';
+		if ($data['mode'] === self::CHART_MODE_HISTORY_ALL_SPLITTED) {
+			$addToQuery = ', user ';
+		}
+
+		// Select average overall given moods for today ceiled
+		$query =  "SELECT CEIL(avg(mood)) AS averageMood, date " . $addToQuery;
 		$query .= "FROM data ";
 
 		// Constrain: History only for one (current) user:
@@ -114,14 +120,26 @@ class Lib_Dispatcher
 		    $query .= "WHERE user = '" . $data['user'] . "'";
 	    }
 
-		$query .= "GROUP BY date ";
+		$query .= "GROUP BY date " . $addToQuery;
 		$query .= "ORDER BY date ";
 		$query .= "Limit 0,30";
 		$result['data'] = ($this->db->readRows($query));
 
 		$out = array();
-		foreach($result['data'] as $data) {
-			$out[] = (int)$data['averageMood'];
+		foreach($result['data'] as $row) {
+
+			if (isset($row['user']) === false) {
+				$row['user'] = 'all';
+			}
+
+			// Try this, to draw data lines with labels with data:
+			//$out[$row['user']][] = array( (string)$row['date'], (int)$row['averageMood']);
+
+			$out[$row['user']][] = (int)$row['averageMood'];
+		}
+
+		if ($data['mode'] != self::CHART_MODE_HISTORY_ALL_SPLITTED) {
+			$out = $out['all'];
 		}
 
 		echo json_encode($out);
